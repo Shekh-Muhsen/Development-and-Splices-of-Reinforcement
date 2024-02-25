@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compression Lap Splice Length Calculator</title>
+<style>
+    /* Add your CSS styles here */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    input[type="number"] {
+        margin-right: 5px;
+    }
+</style>
+</head>
+<body>
+
+<h2>Compression Lap Splice Length Calculator</h2>
+ <a href="index.html">Home</a>
+<form>
+    <label for="f_c">Concrete Strength (f'c) (MPa):</label>
+    <input type="number" id="f_c" value="25">
+    <br>
+    <label for="f_y">Rebar Strength (fy) (MPa):</label>
+    <input type="number" id="f_y" value="415">
+    <br>
+    <button type="button" onclick="calculate()">Calculate</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Rebar Diameter (mm)</th>
+            <th>Lap Splice Length (mm)</th>
+        </tr>
+    </thead>
+    <tbody id="resultTable">
+        <!-- Results will be inserted here -->
+    </tbody>
+</table>
+
+<p>Compression lap splice length is governed by several conditions as follows:<br>
+(a) For fy ≤ 420 MPa: lsc is the greater of 0.071*fy*db, and lsc=300 mm<br>
+(b) For fy 420 MPa: lsc is the greater of (0.13*fy -24)*db and 300 mm<br>
+For f'c <21 MPa, the length of lap shall be increased by one-third.<br>
+The minimum compression lap splice length is 200mm.</p>
+
+<script>
+function calculate() {
+    var f_c = parseFloat(document.getElementById('f_c').value);
+    var f_y = parseFloat(document.getElementById('f_y').value);
+    var diameters = [10, 13, 16, 19, 22, 25, 29, 32]; // Rebar diameters from 8mm to 32mm
+
+    var results = document.getElementById('resultTable');
+    results.innerHTML = ''; // Clear previous results
+    
+    for (var i = 0; i < diameters.length; i++) {
+        var d = diameters[i];
+        // Calculate lap splice length for each diameter
+        var lsc = calculateLapSpliceLength(f_c, f_y, d);
+
+        // Create table row
+        var row = '<tr>';
+        row += '<td>' + d + '</td>';
+        row += '<td>' + lsc.toFixed(2) + '</td>';
+        row += '</tr>';
+        // Append row to table
+        results.innerHTML += row;
+    }
+}
+
+function calculateLapSpliceLength(f_c, f_y, d) {
+    var lsc;
+    if (f_y <= 420) {
+        lsc = Math.max(0.071 * f_y * d, 300);
+    } else {
+        lsc = Math.max((0.13 * f_y - 24) * d, 300);
+    }
+    if (f_c < 21) {
+        lsc *= 1.33; // Increase by one-third for f_c < 21 MPa
+    }
+    return Math.max(200, lsc); // Minimum lap splice length is 200mm
+}
+
+// Initial calculation on page load
+calculate();
+</script>
+</body>
+</html>

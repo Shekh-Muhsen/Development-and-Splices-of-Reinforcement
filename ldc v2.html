@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compression Development Length Calculator</title>
+<style>
+    /* Add your CSS styles here */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+
+<h2>Compression Development Length Calculator</h2>
+ <a href="index.html">Home</a>
+<form id="inputForm">
+    <label for="f_c">Concrete Strength (f'c) (MPa):</label>
+    <input type="number" id="f_c" value="25">
+    <br>
+    <label for="f_y">Rebar Strength (fy) (MPa):</label>
+    <input type="number" id="f_y" value="415">
+    <br>
+    <label for="lambda">Concrete Strength Reduction Factor (λ):</label>
+    <input type="number" id="lambda" value="1.0">
+    <br>
+    <label for="shi_r">Confinement Factor (ψr):</label>
+    <input type="number" id="shi_r" value="1.0">
+    <br>
+    <label for="spacing">Reinforcement Spacing (mm):</label>
+    <input type="number" id="spacing" value="100">
+    <br>
+    <label for="tieStirrup">Reinforcement Type:</label>
+    <select id="tieStirrup">
+        <option value="tie">Tie</option>
+        <option value="spiral">Spiral</option>
+    </select>
+    <br>
+    <label for="tieStirrupDia">Tie or Spiral Diameter (mm):</label>
+    <input type="number" id="tieStirrupDia" value="12">
+    <br>
+    <button type="button" onclick="calculate()">Calculate</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Rebar Diameter (mm)</th>
+            <th>Compression Development Length (mm)</th>
+        </tr>
+    </thead>
+    <tbody id="resultTable">
+        <!-- Results will be inserted here -->
+    </tbody>
+</table>
+
+<script>
+function calculate() {
+    var f_c = parseFloat(document.getElementById('f_c').value);
+    var f_y = parseFloat(document.getElementById('f_y').value);
+    var lambda = parseFloat(document.getElementById('lambda').value);
+    var shi_r = parseFloat(document.getElementById('shi_r').value);
+    var spacing = parseFloat(document.getElementById('spacing').value);
+    var tieStirrup = document.getElementById('tieStirrup').value;
+    var tieStirrupDia = parseFloat(document.getElementById('tieStirrupDia').value);
+    var diameters = [10, 13, 16, 19, 22, 25, 29, 32]; // Rebar diameters from 8mm to 32mm
+
+    var results = document.getElementById('resultTable');
+    results.innerHTML = ''; // Clear previous results
+    
+    for (var i = 0; i < diameters.length; i++) {
+        var d = diameters[i];
+        // Calculate compression development length for each diameter
+        var Ldc = calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spacing, tieStirrup, tieStirrupDia);
+
+        // Create table row
+        var row = '<tr>';
+        row += '<td>' + d + '</td>';
+        row += '<td>' + Ldc.toFixed(2) + '</td>';
+        row += '</tr>';
+        // Append row to table
+        results.innerHTML += row;
+    }
+}
+
+function calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spacing, tieStirrup, tieStirrupDia) {
+    // Formula (a)
+    var Ldc_a = (0.24 * f_y) / (lambda * Math.sqrt(f_c)) * d;
+    // Formula (b)
+    var Ldc_b = 0.043 * f_y * d;
+    
+    // Take the maximum between the two formulas
+    var Ldc = Math.max(Ldc_a, Ldc_b);
+    
+    // Adjust for reinforcement type and spacing
+    if (spacing <= 100 && ((tieStirrupDia >= 12 && tieStirrup === "tie") || (tieStirrupDia === 6 && tieStirrup === "spiral"))) {
+        Ldc *= 0.75; // Apply reduction factor for reinforcement enclosed within specified ties or spirals
+    }
+    
+    return Ldc * shi_r;
+}
+
+// Initial calculation on page load
+calculate();
+</script>
+</body>
+</html>
