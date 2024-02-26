@@ -110,7 +110,7 @@ function calculate() {
         // Calculate development length for each diameter
         var Ldh = calculateLdh(coating, f_y, d, f_c, lambda);
         // Apply additional condition for 90-degree hooks of 36mm diameter bar and smaller bars
-        if (d <= 36 && sideCover >= 65 && (hookType === "90" && tieSpacing <= 3 * d && hookExtensionCover >= 50)) {
+        if (d <= 36 && sideCover >= 65 && (hookType === "90" && hookExtensionCover >= 50)) {
             Ldh *= 0.7; // Multiply by 0.7 if the condition is met
         }
         if (d <= 36 && hookType === "90") {
