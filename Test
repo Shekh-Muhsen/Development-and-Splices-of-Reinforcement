@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Development Length Calculator</title>
+<style>
+    /* Add your CSS styles here */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    input[type="radio"],
+    input[type="number"] {
+        margin-right: 5px;
+    }
+    img {
+        max-width: 100%; /* Set maximum width for the image */
+        height: auto; /* Ensure aspect ratio is maintained */
+    }
+</style>
+</head>
+<body>
+
+<h2>Rebar Anchorage</h2>
+<a href="index.html">Home</a>
+<form>
+    <!-- Existing inputs -->
+    <label for="f_c">Concrete Strength (f'c) (MPa):</label>
+    <input type="number" id="f_c" value="25">
+    <br>
+    <!-- Add inputs for B, number of flexure bar, flexure bar dia, tie dia, tie numbers, spacing of tie -->
+    <label for="B">B:</label>
+    <input type="number" id="B" value="300">
+    <br>
+    <label for="numFlexureBars">Number of Flexure Bars:</label>
+    <input type="number" id="numFlexureBars" value="4">
+    <br>
+    <label for="flexureBarDia">Flexure Bar Diameter (mm):</label>
+    <input type="number" id="flexureBarDia" value="16">
+    <br>
+    <label for="tieDia">Tie Diameter (mm):</label>
+    <input type="number" id="tieDia" value="8">
+    <br>
+    <label for="numTies">Number of Ties:</label>
+    <input type="number" id="numTies" value="4">
+    <br>
+    <label for="tieSpacing">Tie Spacing (mm):</label>
+    <input type="number" id="tieSpacing" value="100">
+    <br>
+    <!-- End of new inputs -->
+    <label for="f_y">Rebar Strength (fy) (MPa):</label>
+    <input type="number" id="f_y" value="415">
+    <br>
+    <label for="lambda">Concrete Strength Reduction Factor (λ):</label>
+    <input type="number" id="lambda" value="1.0">
+    <br>
+    <label for="coating">Rebar Coating:</label>
+    <input type="radio" id="coating_epoxy" name="coating" value="epoxy" checked>
+    <label for="coating_epoxy">Epoxy</label>
+    <input type="radio" id="coating_non_epoxy" name="coating" value="non_epoxy">
+    <label for="coating_non_epoxy">Non-Epoxy</label>
+    <br>
+    <label for="sideCover">Side Cover (mm):</label>
+    <input type="number" id="sideCover" value="65">
+    <br>
+    <label for="hookType">Hook Type:</label>
+    <input type="radio" id="hookType_90" name="hookType" value="90" checked>
+    <label for="hookType_90">90°</label>
+    <input type="radio" id="hookType_180" name="hookType" value="180">
+    <label for="hookType_180">180°</label>
+    <br>
+    <label for="hookExtensionCover">Hook Extension Cover (mm):</label>
+    <input type="number" id="hookExtensionCover" value="50">
+    <br>
+    <label for="tieOrientation">Tie Orientation:</label>
+    <input type="radio" id="tieOrientation_perpendicular" name="tieOrientation" value="perpendicular" checked>
+    <label for="tieOrientation_perpendicular">Perpendicular</label>
+    <input type="radio" id="tieOrientation_parallel" name="tieOrientation" value="parallel">
+    <label for="tieOrientation_parallel">Parallel</label>
+    <br>
+    <button type="button" onclick="calculate()">Calculate</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Rebar Diameter (mm)</th>
+            <th>Rebar Anchorage Ldh (mm)</th>
+            <th>90 Degree Hook Extension Height (mm)</th>
+        </tr>
+    </thead>
+    <tbody id="resultTable">
+        <!-- Results will be inserted here -->
+    </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            <th>Flexure Bar Spacing or Concrete Cover (in)</th>
+            <th>ktr value</th>
+        </tr>
+    </thead>
+    <tbody id="cbKtrTable">
+        <!-- Results will be inserted here -->
+    </tbody>
+</table>
+
+<img src="https://cdn.mathpix.com/snip/images/UrxePqgfm8OX4r_3U4UX07FnVvsVeNS8UtnV4rSK_WI.original.fullsize.png" alt="Equation">
+    <br>
+<img src="https://cdn.mathpix.com/snip/images/6Othj4ZjAEDr2S8Oi2uZSMoFym24al-Lu740jxtX8sw.original.fullsize.png" alt="Equation">
+    <br>
+<img src="https://cdn.mathpix.com/snip/images/Qw6fzTPl1zR89tD5Cx9UM_t3IK8mgET0OoA5mOlN9YM.original.fullsize.png" alt="Equation">
+
+<script>
+function calculate() {
+    var f_c = parseFloat(document.getElementById('f_c').value);
+    var f_y = parseFloat(document.getElementById('f_y').value);
+    var lambda = parseFloat(document.getElementById('lambda').value);
+    var coating = document.querySelector('input[name="coating"]:checked').value === "epoxy" ? true : false;
+    var sideCover = parseFloat(document.getElementById('sideCover').value);
+    var hookType = document.querySelector('input[name="hookType"]:checked').value;
+    var hookExtensionCover = parseFloat(document.getElementById('hookExtensionCover').value);
+    var tieSpacing = parseFloat(document.getElementById('tieSpacing').value);
+    var tieOrientation = document.querySelector('input[name="tieOrientation"]:checked').value;
+    var B = parseFloat(document.getElementById('B').value);
+    var numFlexureBars = parseFloat(document.getElementById('numFlexureBars').value);
+    var flexureBarDia = parseFloat(document.getElementById('flexureBarDia').value);
+    var tieDia = parseFloat(document.getElementById('tieDia').value);
+    var numTies = parseFloat(document.getElementById('numTies').value);
+    var cbKtrTable = document.getElementById('cbKtrTable');
+    cbKtrTable.innerHTML = ''; // Clear previous results
+
+    // Calculate Atr
+    var Atr = (Math.PI / 4) * Math.pow(tieDia, 2) * numTies;
+
+    // Calculate ktr
+    var ktr = (Atr * 40) / (tieSpacing * numFlexureBars);
+
+    // Calculate cb
+    var cb = Math.min(tieSpacing / 2, sideCover); // Assuming tie spacing is less than flexure bar spacing
+
+    // Create table row for cb and ktr
+    var rowCbKtr = '<tr>';
+    rowCbKtr += '<td>' + cb.toFixed(2) + '</td>';
+    rowCbKtr += '<td>' + ktr.toFixed(2) + '</td>';
+    rowCbKtr += '</tr>';
+
+    // Append row to table
+    cbKtrTable.innerHTML += rowCbKtr;
+}
+
+function calculateLdh(coating, f_y, d, f_c, lambda) {
+    // Define psi_e based on coating
+    var psi_e = coating ? 1.2 : 1.0;
+    // Calculate Ldh
+    var Ldh = (0.24 * psi_e * f_y * d) / (lambda * Math.sqrt(f_c));
+    return Math.max(8 * d, 150, Ldh); // Ensure Ldh is not less than 8d or 150mm
+}
+
+function calculate() {
+    var f_c = parseFloat(document.getElementById('f_c').value);
+    var f_y = parseFloat(document.getElementById('f_y').value);
+    var lambda = parseFloat(document.getElementById('lambda').value);
+    var coating = document.querySelector('input[name="coating"]:checked').value === "epoxy" ? true : false;
+    var sideCover = parseFloat(document.getElementById('sideCover').value);
+    var hookType = document.querySelector('input[name="hookType"]:checked').value;
+    var hookExtensionCover = parseFloat(document.getElementById('hookExtensionCover').value);
+    var tieSpacing = parseFloat(document.getElementById('tieSpacing').value);
+    var tieOrientation = document.querySelector('input[name="tieOrientation"]:checked').value;
+    var B = parseFloat(document.getElementById('B').value);
+    var numFlexureBars = parseFloat(document.getElementById('numFlexureBars').value);
+    var flexureBarDia = parseFloat(document.getElementById('flexureBarDia').value);
+    var tieDia = parseFloat(document.getElementById('tieDia').value);
+    var numTies = parseFloat(document.getElementById('numTies').value);
+    var cbKtrTable = document.getElementById('cbKtrTable');
+    cbKtrTable.innerHTML = ''; // Clear previous results
+
+    // Calculate Atr
+    var Atr = (Math.PI / 4) * Math.pow(tieDia, 2) * numTies;
+
+    // Calculate ktr
+    var ktr = (Atr * 40) / (tieSpacing * numFlexureBars);
+
+    // Calculate cb
+    var cb = Math.min(tieSpacing / 2, sideCover); // Assuming tie spacing is less than flexure bar spacing
+
+    // Create table row for cb and ktr
+    var rowCbKtr = '<tr>';
+    rowCbKtr += '<td>' + cb.toFixed(2) + '</td>';
+    rowCbKtr += '<td>' + ktr.toFixed(2) + '</td>';
+    rowCbKtr += '</tr>';
+
+    // Append row to table
+    cbKtrTable.innerHTML += rowCbKtr;
+
+    // Calculate rebar anchorage and extension heights
+    var diameters = [10, 13, 16, 19, 22, 25, 29, 32]; // Rebar diameters from 8mm to 32mm
+    var results = document.getElementById('resultTable');
+    results.innerHTML = ''; // Clear previous results
+    
+    for (var i = 0; i < diameters.length; i++) {
+        var d = diameters[i];
+        // Calculate development length for each diameter
+        var Ldh = calculateLdh(coating, f_y, d, f_c, lambda);
+        // Apply additional condition for 90-degree hooks of 36mm diameter bar and smaller bars
+        if (d <= 36 && sideCover >= 65 && (hookType === "90" && hookExtensionCover >= 50)) {
+            Ldh *= 0.7; // Multiply by 0.7 if the condition is met
+        }
+        if (d <= 36 && hookType === "90") {
+            if ((tieOrientation === "perpendicular" && tieSpacing <= 3 * d) || (tieOrientation === "parallel" && tieSpacing <= 3 * d)) {
+                Ldh *= 0.8; // Multiply by 0.8 if the condition is met
+            }
+        } else if (d <= 36 && hookType === "180") {
+            if ((tieOrientation === "perpendicular" &&tieSpacing <= 3 * d)) {
+                Ldh *= 0.8; // Multiply by 0.8 if the condition is met
+            }
+        }
+        
+        // Calculate extension height for each diameter
+        var c, lst, h;
+        if (d >= 10 && d <= 25) {
+            c = 3 * d;
+        } else if (d >= 29 && d <= 36) {
+            c = 4 * d;
+        }
+        lst = 12 * d;
+        h = c + d + lst;
+
+        // Create table row
+        var row = '<tr>';
+        row += '<td>' + d + '</td>';
+        row += '<td>' + Ldh.toFixed(2) + '</td>';
+        row += '<td>' + h.toFixed(2) + '</td>';
+        row += '</tr>';
+        // Append row to table
+        results.innerHTML += row;
+    }
+}
+
+// Initial calculation on page load
+calculate();
+</script>
+</body>
+</html>
