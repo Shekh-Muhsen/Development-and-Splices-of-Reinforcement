@@ -154,10 +154,14 @@ function calculatePsi_e(cb, d, s, coating) {
             return 1.5;
         else
             return 1.2;
+    } else if (coating === "non-epoxy") {
+        return 1.0; // Non-Epoxy coated
     } else {
-        return 1.0;
+        // Handle other cases (if any)
+        return 1.0; // Default value
     }
 }
+
 
 
 function calculatePsi_s(d) {
