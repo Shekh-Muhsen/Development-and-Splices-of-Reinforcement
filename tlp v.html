@@ -117,13 +117,13 @@ function calculate() {
         var psi_t = calculatePsi_t(cb, d, position);
         var psi_e = calculatePsi_e(cb, d, s, coating);
         var psi_s = calculatePsi_s(d);
-        var psi = psi_t * psi_e * psi_s;
+        var psi = psi_t * psi_e;
         var psi_product_limit = 1.7;
         if (psi > psi_product_limit) {
             psi = psi_product_limit;
         }
         var max_ratio = Math.max((cb + k_tr) / d, 2.50);
-        var Ld = (f_y / (1.1 * lambda * Math.sqrt(f_c)) * psi / max_ratio) * d;
+        var Ld = (f_y / (1.1 * lambda * Math.sqrt(f_c)) * psi*psi_s / max_ratio) * d;
         var classA = Math.max(Ld, 300); // Class A value with minimum 300mm
         var classB =Math.max(1.3*Ld, 300); // Class B value with minimum 300mm
 
