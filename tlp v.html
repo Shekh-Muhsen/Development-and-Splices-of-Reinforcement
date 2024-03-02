@@ -149,18 +149,16 @@ function calculatePsi_t(cb, d, position) {
 
 function calculatePsi_e(cb, d, s, coating) {
     // (b) Epoxy-coated bars or wires condition
-    if (cb < 3 * d || s < 6 * d) {
+    if (coating === "epoxy") {
         if (cb < 3 * d && s < 6 * d)
             return 1.5;
         else
             return 1.2;
     } else {
-        if (coating)
-            return 1.5;
-        else
-            return 1.0;
+        return 1.0;
     }
 }
+
 
 function calculatePsi_s(d) {
     // (c) Rebar diameter condition
