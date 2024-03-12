@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete Parameters</title>
+</head>
+<body>
+    <h1>Concrete Parameters</h1>
+
+    <form onsubmit="calculate(); return false;">
+        <label for="input_lambda">λ = </label>
+        <input type="text" id="input_lambda" required><br>
+
+        <label for="input_psi_t">Ψ<sub>t</sub> = </label>
+        <input type="text" id="input_psi_t" required><br>
+
+        <label for="input_psi_e">Ψ<sub>e</sub> = </label>
+        <input type="text" id="input_psi_e" required><br>
+
+        <label for="input_psi_t_e">Ψ<sub>t</sub> Ψ<sub>e</sub> = </label>
+        <input type="text" id="input_psi_t_e" required><br>
+
+        <label for="input_cb_ktr_db">(cb + K<sub>tr</sub>)/db = </label>
+        <input type="text" id="input_cb_ktr_db" required><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+    
+    <p id="result"></p>
+
+    <script>
+        function calculate() {
+            var lambda = document.getElementById("input_lambda").value;
+            var psi_t = document.getElementById("input_psi_t").value;
+            var psi_e = document.getElementById("input_psi_e").value;
+            var psi_t_e = document.getElementById("input_psi_t_e").value;
+            var cb_ktr_db = document.getElementById("input_cb_ktr_db").value;
+
+            var result = "λ = " + lambda + "<br>" +
+                         "Ψ<sub>t</sub> = " + psi_t + "<br>" +
+                         "Ψ<sub>e</sub> = " + psi_e + "<br>" +
+                         "Ψ<sub>t</sub> Ψ<sub>e</sub> = " + psi_t_e + "<br>" +
+                         "Ψ<sub>s</sub> = N.A.<br>" +
+                         "(cb + K<sub>tr</sub>)/db = " + cb_ktr_db;
+
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+</body>
+</html>
