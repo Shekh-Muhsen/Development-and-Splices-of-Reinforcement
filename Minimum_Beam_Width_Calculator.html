@@ -22,6 +22,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            margin-bottom: 20px;
         }
         input[type="number"] {
             width: 100%;
@@ -43,7 +44,6 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
         th, td {
             border: 1px solid #ddd;
@@ -58,7 +58,7 @@
     <form id="calculatorForm">
         <label for="numberOfBars">Number of Bars:</label>
         <input type="number" id="numberOfBars" name="numberOfBars" min="2" max="25" required>
-        <label for="barNumber">Bar Number:</label>
+        <label for="barNumber">Bar Number (#) or mm:</label>
         <input type="number" id="barNumber" name="barNumber" min="4" max="57" required>
         <input type="submit" value="Calculate">
     </form>
@@ -67,11 +67,12 @@
         <thead>
             <tr>
                 <th>Number of Bars</th>
-                <th>Bar Number(#) or mm</th>
-                <th>Beam Width(inch)</th>
-                <th>Beam Width(mm)</th>
+                <th>Bar Number (#) or mm</th>
+                <th>Beam Width (inch)</th>
+                <th>Beam Width (mm)</th>
             </tr>
         </thead>
+        <br><br>
         <tbody>
             <!-- Results will be inserted here -->
         </tbody>
@@ -153,13 +154,13 @@
             const newRow = resultTable.insertRow();
             const numberOfBarsCell = newRow.insertCell(0);
             const barNumberCell = newRow.insertCell(1);
-            const beamWidthCell = newRow.insertCell(2);
-            const beamWidthCell = newRow.insertCell(3);
-            
+            const beamWidthInchCell = newRow.insertCell(2);
+            const beamWidthMMCell = newRow.insertCell(3);
+
             numberOfBarsCell.textContent = numberOfBars;
             barNumberCell.textContent = barNumber;
-            beamWidthCell.textContent = beamWidth.toFixed(1);
-            beamWidthCell.textContent = (beamWidth*25.4).toFixed(1);
+            beamWidthInchCell.textContent = beamWidth.toFixed(1);
+            beamWidthMMCell.textContent = (beamWidth * 25.4).toFixed(1); // Convert to millimeters
         }
     </script>
 </body>
