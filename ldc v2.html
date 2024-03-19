@@ -123,7 +123,7 @@ function calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spaci
     var Ldc_a = (0.24 * f_y) / (lambda * Math.sqrt(f_c)) * d;
     // Formula (b)
     var Ldc_b = 0.043 * f_y * d;
-    
+    var Ldc_c = 200;
     // Take the maximum between the two formulas
     var Ldc = Math.max(Ldc_a, Ldc_b);
     
@@ -132,7 +132,7 @@ function calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spaci
         Ldc *= 0.75; // Apply reduction factor for reinforcement enclosed within specified ties or spirals
     }
     
-    return Ldc * shi_r*As_Required_Provided;
+    return Math.max(Ldc * shi_r * As_Required_Provided, 200);
 }
 
 // Initial calculation on page load
