@@ -49,6 +49,10 @@
     <label for="tieStirrupDia">Tie or Spiral Diameter (mm):</label>
     <input type="number" id="tieStirrupDia" value="10">
     <br>
+    <label for="As_Required_Provided"> Ratio (As_required/As_Provided):</label>
+    <input type="number" id="As_Required_Provided" value="1">
+    <br>
+    
     <button type="button" onclick="calculate()">Calculate</button>
 </form>
 
@@ -93,6 +97,7 @@ function calculate() {
     var spacing = parseFloat(document.getElementById('spacing').value);
     var tieStirrup = document.getElementById('tieStirrup').value;
     var tieStirrupDia = parseFloat(document.getElementById('tieStirrupDia').value);
+    var As_Required_Provided = document.getElementById('As_Required_Provided').value;
     var diameters = [10, 13, 16, 19, 22, 25, 29, 32]; // Rebar diameters from 8mm to 32mm
 
     var results = document.getElementById('resultTable');
@@ -127,7 +132,7 @@ function calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spaci
         Ldc *= 0.75; // Apply reduction factor for reinforcement enclosed within specified ties or spirals
     }
     
-    return Ldc * shi_r;
+    return Ldc * shi_r*As_Required_Provided;
 }
 
 // Initial calculation on page load
