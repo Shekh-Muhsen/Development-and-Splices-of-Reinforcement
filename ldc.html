@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compression Development Length Calculator</title>
+<style>
+    /* Add your CSS styles here */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+
+<h2>Compression Development Length Calculator</h2>
+<a href="index.html">Home</a>
+<form id="inputForm">
+    <label for="f_c">Concrete Strength (f'c) (MPa):</label>
+    <input type="number" id="f_c" value="25">
+    <br>
+    <label for="f_y">Rebar Strength (fy) (MPa):</label>
+    <input type="number" id="f_y" value="415">
+    <br>
+    <label for="lambda">Concrete Strength Reduction Factor (λ):</label>
+    <input type="number" id="lambda" value="1.0">
+    <br>
+    <label for="shi_r">Confinement Factor (ψr):</label>
+    <input type="number" id="shi_r" value="1.0">
+    <br>
+    <label for="spacing">Reinforcement Spacing (mm):</label>
+    <input type="number" id="spacing" value="100">
+    <br>
+    <label for="tieStirrup">Reinforcement Type:</label>
+    <select id="tieStirrup">
+        <option value="tie">Tie</option>
+        <option value="spiral">Spiral</option>
+    </select>
+    <br>
+    <label for="tieStirrupDia">Tie or Spiral Diameter (mm):</label>
+    <input type="number" id="tieStirrupDia" value="10">
+    <br>
+    <label for="As_Required_Provided"> Ratio (As_required/As_Provided):</label>
+    <input type="number" id="As_Required_Provided" value="1">
+    <br>
+    
+    <button type="button" onclick="calculate()">Calculate</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Rebar Diameter (mm)</th>
+            <th>Compression Development Length (mm)</th>
+        </tr>
+    </thead>
+    <tbody id="resultTable">
+        <!-- Results will be inserted here -->
+    </tbody>
+</table>
+
+<p>BNBC 2020 <span style="text-align: left;color: rgb(32, 33, 34);background-color: rgb(255, 255, 255);font-size: 17.5px;">&sect;&nbsp;</span>8.2.4.3 Length Ldc in Sec 8.2.4.2 shall be permitted to be multiplied by theapplicable factors for:</p>
+<table style="width: 100%;">
+    <tbody>
+        <tr>
+            <td style="width: 50.0000%;"><span style='color: rgb(0, 0, 0); font-family: "Times New Roman"; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;'>&nbsp;</span><strong>(a)</strong>Reinforcement in excess of that required by analysis:<br></td>
+            <td style="width: 50.0000%;"><strong>As_Required/ As_Provided</strong></td>
+        </tr>
+        <tr>
+            <td style="width: 50.0000%;">
+                <p><strong>(b)&nbsp;</strong>Reinforcement enclosed within spiral reinforcement not</p>
+                <p>less than 6 mm diameter and not more than 100 mm pitch</p>
+                <p>or within 12 mm diameter ties in conformance with Sec</p>
+                <p>8.1.9.4 and spaced at not more than 100 mm on center:</p><br>
+            </td>
+            <td style="width: 50.0000%;"><strong>0.75</strong><br></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+function calculate() {
+    var f_c = parseFloat(document.getElementById('f_c').value);
+    var f_y = parseFloat(document.getElementById('f_y').value);
+    var lambda = parseFloat(document.getElementById('lambda').value);
+    var shi_r = parseFloat(document.getElementById('shi_r').value);
+    var spacing = parseFloat(document.getElementById('spacing').value);
+    var tieStirrup = document.getElementById('tieStirrup').value;
+    var tieStirrupDia = parseFloat(document.getElementById('tieStirrupDia').value);
+    var As_Required_Provided = parseFloat(document.getElementById('As_Required_Provided').value); // Parse as float
+
+    var diameters = [10, 13, 16, 19, 22, 25, 29, 32]; // Rebar diameters from 10mm to 32mm
+
+    var results = document.getElementById('resultTable');
+    results.innerHTML = ''; // Clear previous results
+    
+    for (var i = 0; i < diameters.length; i++) {
+        var d = diameters[i];
+        // Calculate compression development length for each diameter
+        var Ldc = calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spacing, tieStirrup, tieStirrupDia, As_Required_Provided);
+
+        // Create table row
+        var row = '<tr>';
+        row += '<td>' + d + '</td>';
+        row += '<td>' + Ldc.toFixed(2) + '</td>';
+        row += '</tr>';
+        // Append row to table
+        results.innerHTML += row;
+    }
+}
+
+function calculateCompressionDevelopmentLength(f_c, f_y, lambda, shi_r, d, spacing, tieStirrup, tieStirrupDia, As_Required_Provided) {
+    // Formula (a)
+    var Ldc_a = (0.24 * f_y) / (lambda * Math.sqrt(f_c)) * d;
+    // Formula (b)
+    var Ldc_b = 0.043 * f_y * d;
+    var Ldc = Math.max(Ldc_a, Ldc_b);
+    
+    // Adjust for reinforcement type and spacing
+    if (spacing <= 100 && ((tieStirrupDia >= 12 && tieStirrup === "tie") || (tieStirrupDia === 6 && tieStirrup === "spiral"))) {
+        Ldc *= 0.75; // Apply reduction factor for reinforcement enclosed within specified ties or spirals
+    }
+    
+    return Math.max(Ldc * shi_r * As_Required_Provided, 200);
+}
+
+// Initial calculation on page load
+calculate();
+</script>
+</body>
+</html>
