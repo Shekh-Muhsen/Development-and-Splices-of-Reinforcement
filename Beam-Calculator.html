@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beam Area Calculator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+
+<h2>Beam Area Calculator</h2>
+
+<form id="beamForm">
+    <label for="f_c">Concrete Strength (f'c) in psi:</label><br>
+    <input type="number" id="f_c" name="f_c" step="0.01" value="4000" required><br><br>
+
+    <label for="b">Width of Beam (b) in inches:</label><br>
+    <input type="number" id="b" name="b" value="12" required><br><br>
+
+    <label for="d">Effective Depth of Beam (d) in inches:</label><br>
+    <input type="number" id="d" name="d" value="16" required><br><br>
+
+    <label for="fy">Steel Yield Strength (fy) in psi:</label><br>
+    <input type="number" id="fy" name="fy" step="0.01" value="60000" required><br><br>
+
+    <label for="Mu">Moment (Mu) in kip-inches:</label><br>
+    <input type="number" id="Mu" name="Mu" step="0.01" value="100" required><br><br>
+
+    <label for="phi">Safety Factor (φ):</label><br>
+    <input type="number" id="phi" name="phi" step="0.01" value="0.9" required><br><br>
+
+    <button type="button" onclick="calculate()">Calculate</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    function calculate() {
+        var f_c = parseFloat(document.getElementById('f_c').value);
+        var b = parseFloat(document.getElementById('b').value);
+        var d = parseFloat(document.getElementById('d').value);
+        var fy = parseFloat(document.getElementById('fy').value);
+        var Mu = parseFloat(document.getElementById('Mu').value) * 1000; // Multiply moment by 1000
+        var phi = parseFloat(document.getElementById('phi').value);
+
+        var A = 0.85 * f_c * b * d / fy;
+        var B = (1.7 * f_c * Mu * b) / (phi * fy * fy);
+        var expressionUnderSquareRoot = A * A - B;
+        var As_req = A - Math.sqrt(expressionUnderSquareRoot);
+
+        var resultTable = "<table><tr><th>Parameter</th><th>Value</th></tr>";
+        resultTable += "<tr><td>Required Area of Steel (As_req)</td><td>" + As_req.toFixed(2) + " in²</td></tr>";
+        resultTable += "</table>";
+
+        document.getElementById('result').innerHTML = resultTable;
+    }
+</script>
+
+</body>
+</html>
