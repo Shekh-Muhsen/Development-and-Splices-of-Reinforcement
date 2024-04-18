@@ -1,1 +1,130 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<style>
+  .button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .button-group button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .button-group button.selected {
+    background-color: lightgreen;
+  }
+  #result-table {
+    border-collapse: collapse;
+    width: 60%;
+    margin: auto;
+  }
+  #result-table th, #result-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+  }
+  .highlight {
+    background-color: lightgreen;
+  }
+</style>
+</head>
+<body>
+
+<div class="button-group">
+  f'c: <input type="text" id="fc" value="30" oninput="calculate()">
+  wc: <input type="text" id="wc" value="2500" oninput="calculate()">
+</div>
+
+<div class="button-group">
+  <button class="button" data-operation="add" onclick="calculate('add')">optional</button>
+  <button class="button" data-operation="4700fc" onclick="calculate('4700fc')">Ec = 4700 sqrt(f'c)</button>
+  <button class="button" data-operation="fcwc43" onclick="calculate('fcwc43')">Ec= wc ^1.5*0.043 sqrt(f'c)</button>
+</div>
+
+<table id="result-table">
+  <tr>
+    <th>Formula</th>
+    <th>Ec(MPa)</th>
+    <th>Ec(ksi)</th>
+  </tr>
+  <tr id="row-add">
+    <td id="operation-add">Addition</td>
+    <td id="result-add-mpa"></td>
+    <td id="result-add-ksi"></td>
+  </tr>
+  <tr id="row-4700fc">
+    <td id="fc-47">Ec = 4700 sqrt(f'c)</td>
+    <td id="result-fc-47-mpa"></td>
+    <td id="result-fc-47-ksi"></td>
+  </tr>
+  <tr id="row-fcwc43">
+    <td id="fc-wc">Ec= wc ^1.5 0.043 sqrt(f'c)</td>
+    <td id="result-fc-wc-mpa"></td>
+    <td id="result-fc-wc-ksi"></td>
+  </tr>
+</table>
+<p>
+ACI 318-19 specifies two equations that may be used to
+determine the elastic modulus of concrete. When using
+<em>Equation 19.2.2.1.a</em>, the density of concrete should
+be in the range of <strong>1440</strong> kg/cu.m to
+<strong>2560</strong> kg/cu.m (<strong>90</strong> lb/cu.ft
+to <strong>160</strong> lb/cu.ft).
+</p>
+
+<script>
+  function calculate(operation) {
+    let fcInput = document.getElementById('fc').value;
+    let wcInput = document.getElementById('wc').value;
+
+    // Evaluate the input expression and calculate the result
+    let fc = eval(fcInput);
+    let wc = eval(wcInput);
+
+    // Calculate the MPa and ksi values for each operation
+    let resultMpa;
+    let resultKsi;
+
+    // Addition
+    let resultAddMpa = fc + wc;
+    let resultAddKsi = resultAddMpa * 0.145038;
+
+    // Ec = 4700 sqrt(fc)
+    let resultFc47Mpa = 4700 * Math.sqrt(fc);
+    let resultFc47Ksi = resultFc47Mpa * 0.145038;
+
+    // Ec= wc ^1.5*0.043 sqrt(fc)
+    let resultFcWcMpa = Math.pow(wc, 1.5) * 0.043 * Math.sqrt(fc);
+    let resultFcWcKsi = resultFcWcMpa * 0.145038;
+
+    // Update the result table
+    document.getElementById('result-add-mpa').textContent = resultAddMpa.toFixed(2);
+    document.getElementById('result-add-ksi').textContent = resultAddKsi.toFixed(2);
+    document.getElementById('result-fc-47-mpa').textContent = resultFc47Mpa.toFixed(2);
+    document.getElementById('result-fc-47-ksi').textContent = resultFc47Ksi.toFixed(2);
+    document.getElementById('result-fc-wc-mpa').textContent = resultFcWcMpa.toFixed(2);
+    document.getElementById('result-fc-wc-ksi').textContent = resultFcWcKsi.toFixed(2);
+
+    // Highlight the selected operation button and result
+    let buttons = document.querySelectorAll('.button');
+    buttons.forEach(button => button.classList.remove('selected'));
+    let selectedButton = document.querySelector(`.button[data-operation="${operation}"]`);
+    selectedButton.classList.add('selected');
+
+    let rows = document.querySelectorAll('tr');
+    rows.forEach(row => row.classList.remove('highlight'));
+    let selectedRow = document.getElementById(`row-${operation}`);
+    selectedRow.classList.add('highlight');
+  }
+</script>
+
+</body>
+</html>
