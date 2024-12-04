@@ -3,121 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rebar Development Length Calculator</title>
+    <title>Development Length Calculator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.5;
-        }
         .input-section, .output-section {
-            margin-bottom: 30px;
-        }
-        .input-section label {
-            display: inline-block;
-            width: 250px;
-            font-weight: bold;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         .input-field {
-            margin: 5px 0;
+            margin-bottom: 15px;
         }
-        .output-section {
-            margin-top: 20px;
+        label {
+            display: block;
+            margin-bottom: 5px;
         }
-        .output-item {
-            margin: 5px 0;
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         .btn {
-            padding: 5px 10px;
-            margin: 5px;
+            padding: 10px 20px;
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 4px;
             cursor: pointer;
         }
         .btn-success {
-            background-color: green;
+            background-color: #28a745;
             color: white;
+            border-color: #28a745;
         }
-        #cc-script-message {
-            color: red;
+        .output-section {
+            background-color: #f7f7f7;
+        }
+        .output-field {
+            margin-bottom: 15px;
+        }
+        .output-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .output-value {
+            color: #ab5800;
         }
     </style>
 </head>
 <body>
-    <h1>Rebar Development Length Calculator</h1>
-    
     <div class="input-section">
         <h2>Input Parameters</h2>
-        
         <div class="input-field">
             <label for="fld_9491707_1">Bar Diameter (dia):</label>
-            <input type="number" id="fld_9491707_1" value="0">
+            <input type="number" id="fld_9491707_1" value="0" onchange="UpdateValues()">
         </div>
-        
         <div class="input-field">
             <label for="fld_6821235_1">Concrete Strength (fc):</label>
-            <input type="number" id="fld_6821235_1" value="0">
+            <input type="number" id="fld_6821235_1" value="0" onchange="UpdateValues()">
         </div>
-        
         <div class="input-field">
             <label for="fld_9495006_1">Steel Strength (fy):</label>
-            <input type="number" id="fld_9495006_1" value="0">
+            <input type="number" id="fld_9495006_1" value="0" onchange="UpdateValues()">
         </div>
-        
         <div class="input-field">
             <label for="fld_8937844_1">Concrete Cover (cb):</label>
-            <input type="number" id="fld_8937844_1" value="40">
+            <input type="number" id="fld_8937844_1" value="40" onchange="UpdateValues()">
         </div>
-        
         <div class="input-field">
             <label for="fld_1046722_1">Transverse Reinforcement (ktr):</label>
-            <input type="number" id="fld_1046722_1" value="0">
+            <input type="number" id="fld_1046722_1" value="0" onchange="UpdateValues()">
         </div>
-        
         <div class="input-field">
             <label>Concrete Type:</label>
-            <button id="fld_3138242_1_opt1425562" class="btn btn-success">Normal Weight</button>
-            <button id="fld_3138242_1_opt1768617" class="btn">Light Weight</button>
+            <button id="fld_3138242_1_opt1425562" class="btn btn-success" onclick="toggleSelection(this); UpdateValues()">Normal Weight</button>
+            <button id="fld_3138242_1_opt1768617" class="btn" onclick="toggleSelection(this); UpdateValues()">Light Weight</button>
         </div>
-        
         <div class="input-field">
             <label>Bar Position:</label>
-            <button id="fld_6276820_1_opt1975367" class="btn btn-success">Horizontal</button>
-            <button id="fld_6276820_1_opt1093878" class="btn">Vertical</button>
+            <button id="fld_6276820_1_opt1975367" class="btn btn-success" onclick="toggleSelection(this); UpdateValues()">Horizontal</button>
+            <button id="fld_6276820_1_opt1093878" class="btn" onclick="toggleSelection(this); UpdateValues()">Vertical</button>
         </div>
-        
         <div class="input-field">
             <label>Coating:</label>
-            <button id="fld_4680772_1_opt1174041" class="btn btn-success">None</button>
-            <button id="fld_4680772_1_opt1120312" class="btn">Epoxy (3db)</button>
-            <button id="fld_4680772_1_opt1409880" class="btn">Epoxy (Other)</button>
+            <button id="fld_4680772_1_opt1174041" class="btn btn-success" onclick="toggleSelection(this); UpdateValues()">None</button>
+            <button id="fld_4680772_1_opt1120312" class="btn" onclick="toggleSelection(this); UpdateValues()">Epoxy (3db)</button>
+            <button id="fld_4680772_1_opt1409880" class="btn" onclick="toggleSelection(this); UpdateValues()">Epoxy (Other)</button>
         </div>
-        
         <div class="input-field">
             <label>Spacing:</label>
-            <button id="fld_7061012_1_opt1802430" class="btn btn-success">db</button>
-            <button id="fld_7061012_1_opt1274359" class="btn">2db</button>
-            <button id="fld_7061012_1_opt1377265" class="btn">Other</button>
+            <button id="fld_7061012_1_opt1802430" class="btn btn-success" onclick="toggleSelection(this); UpdateValues()">db</button>
+            <button id="fld_7061012_1_opt1274359" class="btn" onclick="toggleSelection(this); UpdateValues()">2db</button>
+            <button id="fld_7061012_1_opt1377265" class="btn" onclick="toggleSelection(this); UpdateValues()">Other</button>
         </div>
     </div>
 
     <div class="output-section">
-        <h2>Calculation Results</h2>
-        
-        <div class="output-item">Tensile Development Length (ld): <span id="devt-tens-ld">-</span></div>
-        <div class="output-item">Tensile Lap Splice (Class A): <span id="devt-tsplice-ld">-</span></div>
-        <div class="output-item">Compression Development Length: <span id="devt-comp-ld">-</span></div>
-        <div class="output-item">Compression Lap Splice: <span id="devt-csplice-ld">-</span></div>
-        <div class="output-item">Standard Hook Length (90°): <span id="devt-hook90-ld">-</span></div>
-        <div class="output-item">Standard Hook Length (180°): <span id="devt-hook180-ld">-</span></div>
+        <h2>Results</h2>
+        <div class="output-field">
+            <span class="output-label">Tension Development Length (ld):</span>
+            <span id="devt-tens-ld" class="output-value">0</span> mm
+        </div>
+        <div class="output-field">
+            <span class="output-label">Compression Development Length (ld):</span>
+            <span id="devt-comp-ld" class="output-value">0</span> mm
+        </div>
+        <div class="output-field">
+            <span class="output-label">Tension Lap Length:</span>
+            <span id="devt-tsplice-ld" class="output-value">0</span> mm
+        </div>
+        <div class="output-field">
+            <span class="output-label">Compression Lap Length:</span>
+            <span id="devt-csplice-ld" class="output-value">0</span> mm
+        </div>
     </div>
 
-    <div id="cc-script-message">Loading script...</div>
-
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Include the custom script -->
     <script>
-        // Your JavaScript code goes here
+        // JavaScript Code
+
+        class FieldData {
+            constructor(Id, value) {
+                this.Id = Id
+                this.value = value
+            }
+        }
+
+        var allFields = [
+            new FieldData('fld_9491707_1', 0),
+            new FieldData('fld_6821235_1', 0),
+            new FieldData('fld_9495006_1', 0),
+            new FieldData('fld_8937844_1', 40),
+            new FieldData('fld_1046722_1', 0)
+        ];
+
+        function UpdateValues() {
+            var elem;
+            for (let i = 0; i < allFields.length; i++) {
+                elem = document.getElementById(allFields[i].Id);
+                if (elem) {
+                    allFields[i].value = parseFloat(elem.value) || 0;
+                }
+            }
+            Calculate();
+        }
+
+        function Calculate() {
+            let dia = parseFloat(document.getElementById('fld_9491707_1').value) || 0;
+            let fc = parseFloat(document.getElementById('fld_6821235_1').value) || 0;
+            let fy = parseFloat(document.getElementById('fld_9495006_1').value) || 0;
+
+            let sqrtfc = Math.sqrt(fc);
+            let ld_tens = (fy / (4 * sqrtfc)) * dia;
+            let ld_comp = (fy / (4 * sqrtfc)) * dia;
+
+            UpdatePage('#devt-tens-ld', ld_tens);
+            UpdatePage('#devt-comp-ld', ld_comp);
+        }
+
+        function UpdatePage(ID, value) {
+            document.querySelector(ID).textContent = value.toFixed(2);
+        }
+
+        function toggleSelection(button) {
+            const buttons = button.parentElement.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('btn-success'));
+            button.classList.add('btn-success');
+        }
     </script>
 </body>
 </html>
